@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/alertify.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css'%}">
+    <link rel="stylesheet" href="{% static 'css/alertcustom.css'%}">
+    <style>
+        .product_des,
+        .contact-bg,
+        .about-bg,
+        .che,
+        .box1,
+        .profile,
+        .order-success,
+        .order-fail,.billing{
+            padding-top: 20px;
+            padding-bottom: 30px;
+            background-image: url("{% static 'img/viola.jpg' %}");
+            background-repeat: repeat;
+            background-size: 100%;
+            background-position: top left;
+            width: 100%;
+        }
+
+        .product {
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            text-align: center;
+            justify-content: left;
+            background-repeat: repeat;
+            background-size: 100%;
+            background-position: top left;
+            background-image: url("{% static 'img/viola.jpg' %}");
+
+
+
+        }
+
+        /* Media query for mobile viewport */
+        @media screen and (max-width: 400px) {
+            #paypal-button-container {
+                width: 100%;
+            }
+        }
+
+        /* Media query for desktop viewport */
+        @media screen and (min-width: 400px) {
+            #paypal-button-container {
+                width: 250px;
+            }
+        }
+    </style>
+
+
+    <title>Painting Muse</title>
+</head>
+
+<body>
+    <!--header section-->
+    <header>
+        <div class="con flex">
+            <div class="logo">
+                <a href="{% url 'Painting Muse'%}">
+                    <link rel="stylesheet"
+                        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+                    <!--for icons-->
+                    <img src="{% static 'img/logo.png' %}" alt="Logo" width="20%">
+                </a>
+            </div>
+            <div class="nav">
+                <nav>
+                    <ul>
+                        <li><a href="{% url 'home' %}"> Home </a> </li>
+                        <li><a href="{% url 'shop' %}"> Shop<i class="fa fa-angle-down" aria-hidden="true"></i></a>
+                            <ul class="sub">
+                                {% for cat in categories %}
+                                <li><a href="{% url 'product_category' cat.slug %}">{{ cat.name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        <li><a href="{% url 'aboutus' %}">About Us</a></li>
+                        <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                        <!-- <li><a href="{% url 'feedback' %}">Feedback</a></li> -->
+                    </ul>
+                </nav>
+            </div>
+            <div class="navicon">
+                <nav>
+                    <ul>
+                        <li><a href="{% url 'cart' %}"><i class="fa fa-shopping-bag" aria-hidden="true"></i></a> </li>
+                        <li><a href="{% url 'wishlist' %}"><i class="fa fa-heart-o" aria-hidden="true"></i></a></li>
+                        <li><a href="{% url 'login' %}"><i class="fa fa-user" aria-hidden="true"></i></a>
+                            <ul class="sub">
+                                <li><a href="{% url 'logout' %}">Profile</a></li>
+                                <li><a href="{% url 'order' %}">Orders</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>

@@ -1,0 +1,81 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block content %}
+<div class="billing">
+<div class="billing-details">
+    <h2>Order Details</h2>
+
+    <table>
+        <tr>
+            <th>First Name</th>
+            <td>{{ order_details.fname }}</td>
+        </tr>
+        <tr>
+            <th>Last Name</th>
+            <td>{{ order_details.lname }}</td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td>{{ order_details.email }}</td>
+        </tr>
+        <tr>
+            <th>Contact</th>
+            <td>{{ order_details.contact }}</td>
+        </tr>
+        <tr>
+            <th>Country</th>
+            <td>{{ order_details.country }}</td>
+        </tr>
+        <tr>
+            <th>City</th>
+            <td>{{ order_details.city }}</td>
+        </tr>
+        <tr>
+            <th>Street</th>
+            <td>{{ order_details.street }}</td>
+        </tr>
+        <tr>
+            <th>Total Price</th>
+            <td>Rs.{{ order_details.total_price }}</td>
+        </tr>
+        <tr>
+            <th>Payment Mode</th>
+            <td>{{ order_details.payment_mode }}</td>
+        </tr>
+    </table>
+
+    <h4>Items You Are Purchasing</h2>
+    <div clas="bill">
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.product_qty }}</td>
+                <td>${{ item.product.sell_price }}</td>
+                <td>Rs.{{ item.product_qty|multiply:item.product.sell_price }}</td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>    
+    <div class="paypal-button">
+        {{ paypal_form.render }} 
+    </div>
+
+</div>
+</div>
+
+
+{% endblock %}

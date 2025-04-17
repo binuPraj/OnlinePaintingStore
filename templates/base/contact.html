@@ -1,0 +1,76 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<section class="contact">
+    <div class="contact-bg">
+        <div class="l">
+            <div class="text1">
+                <h3>Get in Touch with us</h3>
+                <h2>Contact us</h2>
+                <div>
+                    <p class="text">
+                        We are always open and ready to serve you with our best items. Get classic sets of paintings
+                        that will glow up your world. Gift the ones that last for the one you love. Show your admiration
+                        and let us help to accompany in your journey. The escape route for you the one and only <b>"The
+                            Painting Muse"</b>
+                        Visit our store to receive discounts and mindblowing offers.
+                    </p>
+                </div>
+                <div class="contact-body">
+                    <div class="contact-info">
+                        <div>
+                            <p>
+                                Phone No.<i class="fa fa-mobile" aria-hidden="true"></i>:
+                                9741808411
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                Email <i class="fa fa-envelope-o" aria-hidden="true"></i>: unxaun@gmail.com
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                Address<i class="fa fa-map-marker" aria-hidden="true"></i>: Srijananagar-1, Bhaktapur
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                Opening Hours<i class="fa fa-clock-o" aria-hidden="true"></i>: Sunday - Friday (9:00AM
+                                to 5:00PM)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="map">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3533.4369537169205!2d85.4039087!3d27.672886800000008!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb1a8564150e7d%3A0xc0562feeec1dc00a!2sSrijana%20Nagar%20Bus%20Stop!5e0!3m2!1sen!2snp!4v1737785485350!5m2!1sen!2snp"
+                    width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+
+        <div class="contact-form">
+            <div class="con-im">
+                <img src="{% static 'img/write.jpg' %}" alt="missing">
+            </div>
+            <form method="POST" id="contactForm">
+                {% csrf_token %}
+                <div>
+                    <input type="text" class="form-control" name="first_name" value="{{ user.first_name }}" readonly >
+                    <input type="text" class="form-control" name="last_name" value="{{ user.last_name }}" readonly >
+                    <input type="email" class="form-control" name="email" value="{{ user.email }}" readonly >
+                    <input type="text" class="form-control" name="phone" placeholder="Phone" required>
+                    <textarea rows="5" placeholder="Message" name="message" class="form-control" required></textarea>
+                    <input type="submit" class="send-btn" value="Send Message">
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

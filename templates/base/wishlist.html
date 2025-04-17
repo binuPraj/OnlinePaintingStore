@@ -1,0 +1,75 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="che">
+<div class="cart-page  product_data wishlist_data">
+    <h1>Wishlist<i class="fa fa-heart-o" aria-hidden="true"></i></h1>
+    <div class="car">
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th></th>
+        </tr>
+        {% if wishlist_items %}
+        {% for item in wishlist_items %}
+        {% csrf_token %}
+        <input type="hidden" value="{{ item.product.uid }}" class="prod_uid">
+        <input type="hidden" class="qty-input" value="1">
+        <tr>
+            <td>
+                <div class="cart-info">
+                    <div class="cimage">
+
+                        <a href="{% url 'product_detail' slug=item.product.slug %}"><img
+                                src="{{item.product.image.url}}"></a>
+                    </div>
+                    <div>
+                        <a href="{% url 'product_detail' slug=item.product.slug %}" style="color: black;">
+                            <p>{{item.product.name}}</p>
+                        </a>
+                        <h5><a href="javascript:void(0);" class="delete-wishlist-item"> Remove <i class="fa fa-trash-o"
+                                    aria-hidden="true"></i></a></h5>
+                    </div>
+                </div>
+            </td>
+
+            {% if item.product.stock_quantity %}
+
+            <td>{{item.product.sell_price}}</td>
+            <td><a href="javascript:void(0);" class="butt addToCartbtnr"> Cart <i class="fa fa-shopping-cart"
+                        aria-hidden="true"></i></a></td>
+            {% else %}
+
+            <td>${{item.product.sell_price}}</td>
+            <td>
+                <p>Out of stock</p>
+            </td>
+            {%endif%}
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="4">
+                <div class="no-items">
+                    <p>Your wishlist is empty.</p>
+                </div>
+            </td>
+        </tr>
+        {% endif %}
+    </table>
+</div>
+    <div class="ch">
+        {% if wishlist_items%}
+        <a href="{% url 'cart' %}" class="check-but addAllToCartbtn">Add to Cart <i class="fa fa-shopping-cart"
+                aria-hidden="true"></i></a>
+        {% else %}
+        <a href="{% url 'shop' %}" class="check-but">Let's go Shop <i class="fa fa-shopping-bag"
+                aria-hidden="true"></i></a>
+        {%endif%}
+    </div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+class Person:
+    def __init__(self, name: str, gender: str, age: int):
+        self.name = name
+        self.gender = gender
+        self.age = age
+
+    def print_student_info(self):
+        print(f"Student Name: {self.name}")
+        print(f"Gender: {self.gender}")
+        print(f"Fee: ${self.fee:.2f}")
+
+# Create an object named student
+student = Person("Alice", "Female", 20)
+
+# Add an attribute 'fee' from outside the class
+student.fee = 1000.0  # Initial fee
+
+# Define the update_fee function outside the class
+def update_fee(self):
+    self.fee *= 1.05  # Increase fee by 5%
+    print(f"Updated Fee: ${self.fee:.2f}")
+
+# Attach update_fee method to the student object **directly**
+student.update_fee = lambda: update_fee(student)  # Using lambda to bind self
+
+# Print student details
+student.print_student_info()
+
+# Update and display the fee using the dynamically added method
+student.update_fee()

@@ -1,0 +1,119 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="che">
+<div class="checkout">
+    {% csrf_token %}
+    <div class="userdetail">
+        <h4>User Details</h4>
+        <div class="name">
+            <div>
+                <label for="first_name" class="label-default">First Name</label>
+                <input type="text" name="fname" id="fname" value="{{ user.first_name }}" readonly>
+            </div>
+            <div>
+                <label for="last_name" class="label-default">Last Name</label>
+                <input type="text" name="lname" id="lname" value="{{ user.last_name }}" readonly>
+            </div>
+        </div>
+        <div class="inf">
+            <div>
+                <label for="email" class="label-default">Email</label>
+                <input type="text" name="email" id="email" value="{{ user.email }}" readonly>
+            </div>
+
+            <div>
+                <label for="contact" class="label-default">Contact No.</label>
+                <input type="text" required name="contact" id="contact">
+            </div>
+            <div>
+                <label for="country" class="label-default">Country</label>
+                <input type="country" required name="country" id="country">
+            </div>
+            <div>
+                <label for="city" class="label-default">City</label>
+                <input type="text" required name="city" id="city">
+            </div>
+            <div>
+                <label for="street" class="label-default">Street</label>
+                <input type="text" required name="street" id="street">
+            </div>
+        </div>
+    </div>
+    <div class="cart-item">
+        <h4>Order Summary</h4>
+        {% if cart_items %}
+        <div class="it">
+            <table>
+                {% for i in cart_items %}
+                <tr>
+                    <td>
+                        <div class="chimage"><a href="{% url 'product_detail' slug=i.product.slug %}"><img
+                                    src="{{i.product.image.url}}"></a>
+                        </div>
+                    </td>
+                    <td>
+                        <p>{{i.product.name}}</p>
+                        <input type="number" value="{{i.product_qty}}" min="1" max="{{ i.product.stock_quantity }}">
+                    </td>
+                    <td>
+                        <p class="item-price" data-price="{{i.product.sell_price}}">Rs.{{i.product.sell_price}}</p>
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </table>
+        </div>
+        {%endif %}
+        <div class="total">
+            <table>
+                <tr>
+                    <td>Subtotal</td>
+                    <td>
+                        <p id="subtotal">Rs.{{ subtotal }}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Tax (13%)</td>
+                    <td>
+                        <p id="tax">Rs.{{ tax_amount }}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Total</td>
+                    <td>
+
+                        <p id="total">Rs.{{ total }}</p>
+                        <input type="hidden" value="{{total}}" name="total_price">
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="pay">
+            <p> Payment</p>
+            <label for="Paypal">
+                <input type="radio" id="paypal" value="paypal" name="payment_mode" value="esewa">
+                Paypal
+            </label>
+            <br>
+            <label for="COD">
+                <input type="radio" id="COD" value="COD" name="payment_mode" value="credit-card">
+                Cash on Delivery
+            </label>
+            <br>
+
+        </div>
+
+        <div class="purchase">
+
+            <a href="javascript:void(0);" class="purch"> Proceed to Checkout</a>
+        </div>
+    </div>
+
+</div>
+</div>
+
+{% endblock %}

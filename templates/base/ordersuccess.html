@@ -1,0 +1,41 @@
+{% extends 'base/base.html' %}
+{% load custom_filters %}
+{% block content %}
+<div class="order-success">
+    <div class="det">
+        <h2>Order placed successfully. Thank you for using our service</h2>
+        <div class="view">
+            <div class="ship">
+                <h4>Your Details</h4>
+                <p><strong>Tracking Number:</strong> {{ tracking_no }}</p>
+                <p><strong>Shipping Address:</strong></p>
+                <ul>
+                    <li><strong>Country:</strong> {{ country }}</li>
+                    <li><strong>City:</strong> {{ street }}</li>
+                    <li><strong>Street:</strong> {{ city }}</li>
+                </ul>
+            </div>
+            <div class="show">
+                <h4>Order Items</h4>
+                <table>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                    {% for item in order_items %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>${{ item.price }}</td>
+                        <td>${{ item.price|multiply:item.quantity }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

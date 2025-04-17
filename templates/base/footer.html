@@ -1,0 +1,97 @@
+<!--footer section-->
+{% load static %}
+<footer>
+    <div class="foot">
+        <p> For anyone who has slightest interest in paintings, we are here for you</p>
+        <br>
+        <p>The Painting Muse</p>
+        <p>Srijananagar-1, Bhaktapur, Nepal</p>
+        <p>Contact no: 9741808411, 9813281886</p>
+        <ul>
+            <li><a href="https://www.facebook.com/binu.prajapati.125" target="_blank"><i class="fa fa-facebook-official"
+                        aria-hidden="true"></i></a></li>
+            <li><a href="https://www.instagram.com/bwahahaa_09/" target="_blank"><i class="fa fa-instagram"
+                        aria-hidden="true"></i></a></li>
+            <li><a href="https://www.instagram.com/bwahahaa_09/" target="_blank"><i class="fa fa-twitter-square"
+                        aria-hidden="true"></a></i></li>
+        </ul>
+    </div>
+</footer>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+<script src="{% static 'js/custom.js'%}"></script>
+<script>
+    const contactUrl = "{% url 'contactus' %}";  // Ensure the URL is rendered properly
+
+// document.getElementById('contactForm').addEventListener('submit', function(e) {
+//     e.preventDefault();  // Prevent default form submission
+
+//     // Collect the form data
+//     const formData = new FormData(this);
+
+//     // Get CSRF token from the page
+//     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+//     // Send the data to the server using Fetch API
+//     fetch(contactUrl, {
+//         method: 'POST',
+//         body: formData,
+//         headers: {
+//             'X-CSRFToken': csrfToken,  // Ensure CSRF token is included in the header
+//             'X-Requested-With': 'XMLHttpRequest'  // Ensure the header for AJAX request is included
+//         }
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.success) {
+//             alertify.notify("✔ " + data.message, 'success', 5);
+//         } else {
+//             alertify.notify(" " + data.message, 'error', 5);
+//         }
+//     })
+//     .catch(error => {
+//         console.error('Error:', error);
+//     });
+// });
+document.addEventListener('DOMContentLoaded', function () {
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', function (e) {
+            e.preventDefault();  // Prevent default form submission
+
+            // Collect the form data
+            const formData = new FormData(this);
+
+            // Get CSRF token from the page
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            // Send the data to the server using Fetch API
+            fetch(contactUrl, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': csrfToken,  // Ensure CSRF token is included in the header
+                    'X-Requested-With': 'XMLHttpRequest'  // Ensure the header for AJAX request is included
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alertify.notify("✔ " + data.message, 'success', 5);
+                } else {
+                    alertify.notify(" " + data.message, 'error', 5);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    } else {
+        console.error("Form element with ID 'contactForm' not found.");
+    }
+});
+
+
+</script>
+</body>
+</html>

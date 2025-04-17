@@ -1,0 +1,69 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="box1">
+    <div class="wrapper">
+        <form method="POST" action="{% url 'register' %}">
+            {% csrf_token %}
+            {% include 'base/alert.html' %}
+            <h1>Register</h1>
+            {{ form.non_field_errors }}
+            <div class="int">
+            <div class="input-box">
+                <input type="text" name="{{ form.first_name.name }}" required class="form-control"
+                    placeholder="First Name" value="{{ form.first_name.value }}">
+                <span class="text-danger">{{ form.first_name.errors }}</span>
+            </div>
+            <div class="input-box">
+                <input type="text" name="{{ form.last_name.name }}" required class="form-control"
+                    placeholder="Last Name" value="{{ form.last_name.value }}">
+                <span class="text-danger">{{ form.last_name.errors }}</span>
+            </div>
+            </div>
+            <div class="input-box">
+                <input type="text" name="{{ form.username.name }}" required class="form-control" placeholder="Username"
+                    value="{{ form.username.value }}">
+                <span class="text-danger">{{ form.username.errors }}</span>
+                <i class="fa fa-user" aria-hidden="true"></i>
+            </div>
+
+            <div class="input-box">
+                <input type="email" name="email" class="form-control" required placeholder="Email">
+                <span class="text-danger">{{ form.email.errors }}</span>
+                <i class="fa fa-envelope" aria-hidden="true"></i>
+            </div>
+
+
+            <div class="input-box">
+                <input type="password" name="{{ form.password1.name }}" required class="form-control"
+                    placeholder="Password" value="{{ form.password1.value }}">
+                <span class="text-danger">{{ form.password1.errors }}</span>
+                <i class="fa fa-lock" aria-hidden="true"></i>
+            </div>
+
+            <div class="input-box">
+                <input type="password" name="{{ form.password2.name }}" required class="form-control"
+                    placeholder="Re-Type Password" value="{{ form.password2.value }}">
+                <span class="text-danger">{{ form.password2.errors }}</span>
+                <i class="fa fa-lock" aria-hidden="true"></i>
+            </div>
+
+            <button type="submit" class="btn">Register</button>
+
+            <div class="link">
+                <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- <script>
+    {% if messages %}
+    setTimeout(function () {
+        // Redirect after 3 seconds (3000ms)
+        window.location.href = "{% url 'login' %}";
+    }, 3000); 
+    {% endif %}
+</script>
+{% endblock %} -->

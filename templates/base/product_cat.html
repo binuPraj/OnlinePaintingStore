@@ -1,0 +1,61 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<section class="product">
+    <div class="contain">
+        <div class="left">
+            <div class="conten">
+                <h2>Shop By Category</h2>
+                <ul>
+                    {% for cat in categories %}
+                    <li><i class="fa fa-angle-right" aria-hidden="true"></i>
+                        <a href="{% url 'product_category' cat.slug %}">{{ cat.name }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="boxx">
+            <div class="topic">
+                <h1>{{ category.name }}</h1>
+                <form class='check' method="GET" action="{% url 'product_search' %}">
+                    <input type="text" id="srh" placeholder="Search Here" name="q" value="{{ request.GET.q }}">
+                    <button type="submit" id="icon">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                </form>
+            </div>
+            <div class="box-con">
+
+                {% for pro in products_by_cat %}
+                <div class="b product_data">
+                    {% csrf_token %}
+
+                    <input type="hidden" class="prod_uid" value="{{ pro.uid }}">
+                    <input type="hidden" class="qty-input" value="1">
+
+                    <div class="image">
+                        <a href="{% url 'product_detail' slug=pro.slug %}">
+                            <img src="{{ pro.image.url }}" alt="{{ pro.name }}">
+                        </a>
+                        <div class="wishlist-overlay">
+                            <a href="javascript:void(0);" class="updatewishlist" style="text-decoration: none;">
+                                <i class="fa fa-heart-o" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <h3>{{ pro.name }}</h3>
+                        <p>${{ pro.sell_price }}</p>
+                    </div>
+                    <button type="button" class="button addToCartbtn">Add to Cart <i class="fa fa-shopping-cart"
+                            aria-hidden="true"></i></button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

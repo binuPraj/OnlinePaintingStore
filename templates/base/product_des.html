@@ -1,0 +1,45 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+{% block content%}
+<section class="product_des">
+    <div class="description product_data">
+        <div class="pimage">
+            <img src={{productdetails.image.url}} alt="paint">
+            <div class="w">
+                <a href="javascript:void(0);" class="updatewishlist" style="text-decoration: none;">
+                    <i class="fa fa-heart-o" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+        <div class="details">
+            {% csrf_token %}
+            <input type="hidden" value="{{ productdetails.uid }}" class="prod_uid">
+            <h1>{{productdetails.name}} </h1>
+            <h2>$.{{productdetails.sell_price}} </h2>
+            <p>{{productdetails.description |safe}} </p>
+            <br>
+            <h3>Artist: {{productdetails.artist}} </h3>
+            <br>
+            <p>Size:{{productdetails.size_in_length}}x{{productdetails.size_in_breadth}} (in cm)</p>
+            <br>
+            <p>Category: {{productdetails.category}}</p>
+            <br>
+            {% if productdetails.stock_quantity != 0 %}
+            <p>Availability: {{productdetails.stock_quantity}} in stock</p>
+            <div class="quantity">
+                <p>Quantity</p>
+                <input type="number" value="1" min="1" max="{{ productdetails.stock_quantity }}"
+                    class="form-control qty-input"> <!--qty-input to send quantity-->
+            </div>
+            <button class="addToCartbtn">Add to Cart <i class="fa fa-shopping-cart" aria-hidden="true"></i></button>
+            {% else %}
+            <p style="color: #5a2906; font-size: 18px; text-align: center; padding: 10px;"> OUT OF STOCK!</p>
+            {% endif %}
+
+        </div>
+    </div>
+    </div>
+</section>
+
+{% endblock %}

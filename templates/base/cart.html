@@ -1,0 +1,79 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="che">
+<div class=" cart-page product_data cart_data">
+    <h1>Cart</h1>
+    <div class="car">
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+        </tr>
+        {% if cart_items %}
+        {% for item in cart_items %}
+        {% csrf_token %}
+        <tr>
+            <td>
+                <div class="cart-info ">
+                    <div class="cimage">
+                        <a href="{% url 'product_detail' slug=item.product.slug %}"><img
+                                src="{{item.product.image.url}}"></a>
+                    </div>
+                    <div>
+                        <a href="{% url 'product_detail' slug=item.product.slug %}" style="color: black;">
+                            <p>{{item.product.name}}</p>
+                        </a>
+                        <h5><a href="javascript:void(0);" class="delete-cart-item"> Remove <i class="fa fa-trash-o"
+                                    aria-hidden="true"></i></a></h5>
+                    </div>
+                </div>
+            </td>
+            <input type="hidden" value="{{ item.product.uid }}" class="prod_uid">
+            {% if item.product.stock_quantity >= item.product_qty %}
+            <td><input type="number" class="changeQuantity qty-input" value="{{item.product_qty}}" min="1"
+                    max="{{ item.product.stock_quantity }}"></td>
+
+            {% elif item.product.stock_quantity > 0 %} <td><input type="number" class="changeQuantitywish qty-input" value=" {{
+                item.product_qty }}" min="1" max="{{ item.product.stock_quantity }}"></td>
+
+            {% else %}
+            <td>
+                <p style="color: #5a2906 ">Out of Stock!!</p>
+            </td>
+            {% endif %}
+
+            <td>Rs.{{item.product.sell_price}}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="4">
+                <div class="no-items">
+                    <p>Your cart is empty.</p>
+                </div>
+            </td>
+        </tr>
+        {% endif %}
+    </table>
+</div>
+    <div class="ch">
+        <div>
+            <!--fro all cart item-->
+            {% if cart_items %}
+            <a href="{% url 'checkout' %}?all_items=true" class="check-but">Head to Checkout <i class="fa fa-credit-card"
+                    aria-hidden="true"></i></a>
+            {% else %}
+            <a href="{% url 'shop' %}" class="check-but">Let's go Shop <i class="fa fa-shopping-bag"
+                    aria-hidden="true"></i></a>
+            {%endif%}
+        </div>
+    </div>
+</div>
+</div>
+
+
+{% endblock %}

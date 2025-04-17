@@ -1,0 +1,85 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="order-page">
+    {% if orders %}
+    <h1>Order History</h1>
+
+    <div class="ordermain">
+        <div class="order">
+            <h2>Pending Orders</h2>
+            <table>
+                <tr>
+                    <th>Order Date</th>
+                    <th>Tracking Number</th>
+                    <th>Total Price</th>
+                    <th>Payment Status</th>
+                </tr>
+                {% for item in orders %}
+                {% if item.status == "Pending" %}
+                <tr>
+                    <td>{{ item.created_at }}</td>
+                    <td>{{ item.tracking_no }}</td>
+                    <td>$ {{ item.total_price }}</td>
+                    <td>{% if item.payment_status %} Paid {% else %} Not Paid {% endif %}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <div class="ordermain">
+        <div class="order">
+            <h2>Out For Delivery</h2>
+            <table>
+                <tr>
+                    <th>Order Date</th>
+                    <th>Tracking Number</th>
+                    <th>Total Price</th>
+                    <th>Payment Status</th>
+                </tr>
+                {% for item in orders %}
+                {% if item.status == "Out For Delivery" %}
+                <tr>
+                    <td>{{ item.created_at }}</td>
+                    <td>{{ item.tracking_no }}</td>
+                    <td>$ {{ item.total_price }}</td>
+                    <td>{% if item.payment_status %} Paid {% else %} Not Paid {% endif %}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <div class="ordermain">
+        <div class="order">
+            <h2>Delivered Orders</h2>
+            <table>
+                <tr>
+                    <th>Order Date</th>
+                    <th>Tracking Number</th>
+                    <th>Total Price</th>
+                </tr>
+                {% for item in orders %}
+                {% if item.status == "Completed" %}
+                <tr>
+                    <td>{{ item.created_at }}</td>
+                    <td>{{ item.tracking_no }}</td>
+                    <td>$ {{ item.total_price }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <p>No orders found.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

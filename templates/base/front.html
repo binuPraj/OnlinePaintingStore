@@ -1,0 +1,20 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+{% block content%}
+<div class="box">
+    <img class="t" src="{% static 'img/violet.jpg' %}" alt="front">
+    <div class="con flex">
+        <div>
+            <h2>FOREVER MORE</h2>
+            <a href="{% url 'home' %}" class="button">Lets Go</a>
+            <p>
+                STEP INSIDE WHERE SECRETS ARE PAINTED AND DREAM TAKES ITS FORM
+                <br>
+               IN THE SHADES OF EVERGREEN
+            </p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

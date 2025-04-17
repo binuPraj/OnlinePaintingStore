@@ -1,0 +1,488 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="checkout">
+    {% csrf_token %}
+    <div class="userdetail">
+        <h4>User Details</h4>
+        <div class="name">
+            <div>
+                <label for="first_name" class="label-default">First Name</label>
+                <input type="text" name="fname" id="fname" value="{{ user.first_name }}" readonly>
+            </div>
+            <div>
+                <label for="last_name" class="label-default">Last Name</label>
+                <input type="text" name="lname" id="lname" value="{{ user.last_name }}" readonly>
+            </div>
+        </div>
+        <div class="inf">
+            <div>
+                <label for="email" class="label-default">Email</label>
+                <input type="text" name="email" id="email" value="{{ user.email }}" readonly>
+            </div>
+
+            <div>
+                <label for="contact" class="label-default">Contact No.</label>
+                <input type="text" required name="contact" id="contact">
+            </div>
+            <div>
+                <label for="district" class="label-default">District</label>
+                <input type="text" required name="district" id="district">
+            </div>
+            <div>
+                <label for="city" class="label-default">City</label>
+                <input type="text" required name="city" id="city">
+            </div>
+            <div>
+                <label for="street" class="label-default">Street</label>
+                <input type="text" required name="street" id="street">
+            </div>
+        </div>
+    </div>
+    <div class="cart-item">
+        <h4>Order Summary</h4>
+        {% if cart_items %}
+        <div class="it">
+            <table>
+                {% for i in cart_items %}
+                <tr>
+                    <td>
+                        <div class="chimage"><a href="{% url 'product_detail' slug=i.product.slug %}"><img
+                                    src="{{i.product.image.url}}"></a>
+                        </div>
+                    </td>
+                    <td>
+                        <p>{{i.product.name}}</p>
+                        <input type="number" value="{{i.product_qty}}" min="1" max="{{ i.product.stock_quantity }}">
+                    </td>
+                    <td>
+                        <p class="item-price" data-price="{{i.product.sell_price}}">Rs.{{i.product.sell_price}}</p>
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </table>
+        </div>
+        {%endif %}
+        <div class="total">
+            <table>
+                <tr>
+                    <td>Subtotal</td>
+                    <td>
+                        <p id="subtotal">Rs.{{ subtotal }}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Tax (13%)</td>
+                    <td>
+                        <p id="tax">Rs.{{ tax_amount }}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Total</td>
+                    <td>
+
+                        <p id="total">Rs.{{ total }}</p>
+                        <input type="hidden" value="{{total}}" name="total_price">
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="display: flex; justify-content: center; align-items: center; margin-top: 20px;">
+            <div id="paypal-button-container"></div>
+        </div>
+
+        <script
+            src="https://www.paypal.com/sdk/js?client-id=AZLJNIQ6C5UHvhfOviGWLjgAoR9QYwW9QvElB3ZJBG8YUWPqbjQbqpvo1SiYvnoGqaNWkN7sWfo6zIin&currency=USD"></script>
+
+        <input type="hidden" id="total_price" value="{{ total }}" name="total_price">
+
+        <script>
+            paypal.Buttons({
+                createOrder: function (data, actions) {
+                    var total = document.getElementById('total_price').value;
+
+                    return fetch('/demo/checkout/api/paypal/order/create/', {
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            purchase_units: [{
+                                amount: {
+                                    value: total 
+                                }
+                            }]
+                        })
+                    }).then(function (res) {
+                        return res.json();
+                    }).then(function (orderData) {
+                        return orderData.id;
+                    });
+                },
+                onApprove: function (data, actions) {
+                    return fetch('/demo/checkout/api/paypal/order/' + data.orderID + '/capture/', {
+                        method: 'post'
+                    }).then(function (res) {
+                        return res.json();
+                    }).then(function (orderData) {
+                        var errorDetail = Array.isArray(orderData.details) && orderData.details[0];
+
+                        if (errorDetail && errorDetail.issue === 'INSTRUMENT_DECLINED') {
+                            return actions.restart();
+                        }
+
+                        if (errorDetail) {
+                            var msg = 'Sorry, your transaction could not be processed.';
+                            if (errorDetail.description) msg += '\n\n' + errorDetail.description;
+                            if (orderData.debug_id) msg += ' (' + orderData.debug_id + ')';
+                            return alert(msg);
+                        }
+
+                        console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+                        var transaction = orderData.purchase_units[0].payments.captures[0];
+                        alert('Transaction ' + transaction.status + ': ' + transaction.id);
+                    });
+                }
+            }).render('#paypal-button-container');
+        </script>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="checkout">
+    {% csrf_token %}
+    <div class="userdetail">
+        <h4>User Details</h4>
+        <div class="name">
+            <div>
+                <label for="first_name" class="label-default">First Name</label>
+                <input type="text" name="fname" id="fname" value="{{ user.first_name }}" readonly>
+            </div>
+            <div>
+                <label for="last_name" class="label-default">Last Name</label>
+                <input type="text" name="lname" id="lname" value="{{ user.last_name }}" readonly>
+            </div>
+        </div>
+        <div class="inf">
+            <div>
+                <label for="email" class="label-default">Email</label>
+                <input type="text" name="email" id="email" value="{{ user.email }}" readonly>
+            </div>
+
+            <div>
+                <label for="contact" class="label-default">Contact No.</label>
+                <input type="text" required name="contact" id="contact">
+            </div>
+            <div>
+                <label for="district" class="label-default">District</label>
+                <input type="text" required name="district" id="district">
+            </div>
+            <div>
+                <label for="city" class="label-default">City</label>
+                <input type="text" required name="city" id="city">
+            </div>
+            <div>
+                <label for="street" class="label-default">Street</label>
+                <input type="text" required name="street" id="street">
+            </div>
+        </div>
+    </div>
+    <div class="cart-item">
+        <h4>Order Summary</h4>
+        {% if cart_items %}
+        <div class="it">
+            <table>
+                {% for i in cart_items %}
+                <tr>
+                    <td>
+                        <div class="chimage"><a href="{% url 'product_detail' slug=i.product.slug %}"><img
+                                    src="{{i.product.image.url}}"></a>
+                        </div>
+                    </td>
+                    <td>
+                        <p>{{i.product.name}}</p>
+                        <input type="number" value="{{i.product_qty}}" min="1" max="{{ i.product.stock_quantity }}">
+                    </td>
+                    <td>
+                        <p class="item-price" data-price="{{i.product.sell_price}}">Rs.{{i.product.sell_price}}</p>
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </table>
+        </div>
+        {%endif %}
+        <div class="total">
+            <table>
+                <tr>
+                    <td>Subtotal</td>
+                    <td>
+                        <p id="subtotal">Rs.{{ subtotal }}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Tax (13%)</td>
+                    <td>
+                        <p id="tax">Rs.{{ tax_amount }}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Total</td>
+                    <td>
+
+                        <p id="total">Rs.{{ total }}</p>
+                        <input type="hidden" value="{{total}}" name="total_price">
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="pay">
+            <p> Payment</p>
+            <label for="Paypal">
+                <input type="radio" id="paypal" value="paypal" name="payment_mode" value="esewa">
+                Paypal
+            </label>
+            <br>
+            <label for="COD">
+                <input type="radio" id="COD" value="COD" name="payment_mode" value="credit-card">
+                Cash on Delivery
+            </label>
+            <br>
+
+        </div>
+
+        <div class="purchase">
+
+            <a href="javascript:void(0);" class="purch"> Proceed to Checkout</a>
+        </div>
+    </div>
+
+</div>
+
+<!-- Set up a container element for the button -->
+    <div id="paypal-button-container"></div>
+
+    <!-- Include the PayPal JavaScript SDK -->
+    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+
+    <script>
+        // Render the PayPal button into #paypal-button-container
+        paypal.Buttons({
+            // Call your server to set up the transaction
+            createOrder: function(data, actions) {
+                return fetch('/demo/checkout/api/paypal/order/create/', {
+                    method: 'post'
+                }).then(function(res) {
+                    return res.json();
+                }).then(function(orderData) {
+                    return orderData.id;
+                });
+            },
+
+            // Call your server to finalize the transaction
+            onApprove: function(data, actions) {
+                return fetch('/demo/checkout/api/paypal/order/' + data.orderID + '/capture/', {
+                    method: 'post'
+                }).then(function(res) {
+                    return res.json();
+                }).then(function(orderData) {
+                    // Three cases to handle:
+                    //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
+                    //   (2) Other non-recoverable errors -> Show a failure message
+                    //   (3) Successful transaction -> Show confirmation or thank you
+
+                    // This example reads a v2/checkout/orders capture response, propagated from the server
+                    // You could use a different API or structure for your 'orderData'
+                    var errorDetail = Array.isArray(orderData.details) && orderData.details[0];
+
+                    if (errorDetail && errorDetail.issue === 'INSTRUMENT_DECLINED') {
+                        return actions.restart(); // Recoverable state, per:
+                        // https://developer.paypal.com/docs/checkout/integration-features/funding-failure/
+                    }
+
+                    if (errorDetail) {
+                        var msg = 'Sorry, your transaction could not be processed.';
+                        if (errorDetail.description) msg += '\n\n' + errorDetail.description;
+                        if (orderData.debug_id) msg += ' (' + orderData.debug_id + ')';
+                        return alert(msg); // Show a failure message (try to avoid alerts in production environments)
+                    }
+
+                    // Successful capture! For demo purposes:
+                    console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+                    var transaction = orderData.purchase_units[0].payments.captures[0];
+                    alert('Transaction '+ transaction.status + ': ' + transaction.id + '\n\nSee console for all available details');
+
+                    // Replace the above to show a success message within this page, e.g.
+                    // const element = document.getElementById('paypal-button-container');
+                    // element.innerHTML = '';
+                    // element.innerHTML = '<h3>Thank you for your payment!</h3>';
+                    // Or go to another URL:  actions.redirect('thank_you.html');
+                });
+            }
+        }).render('#paypal-button-container');
+    </script>
+
+{% endblock %}
+
+
+
+$('.purch').click(function (e) {
+    e.preventDefault();
+    e.stopPropagation(); 
+
+    const fname = $('#fname').val();
+    const lname = $('#lname').val();
+    const contact = $('#contact').val();
+    const district = $('#district').val();
+    const city = $('#city').val();
+    const street = $('#street').val();
+    const paymentMode = $('input[name=payment_mode]:checked').val();
+
+    if (!fname || !lname || !contact || !district || !city || !street) {
+        showNotification('error', 'Please fill all the fields');
+        return; 
+    }
+    if (!paymentMode) {
+        showNotification('error', "Please select a payment method");
+        return;  
+    }
+
+    const formData = {
+        fname: fname,
+        lname: lname,
+        email: $('#email').val(),
+        contact: contact,
+        district: district,
+        city: city,
+        street: street,
+        payment_mode: paymentMode,
+        total_price: $('input[name=total_price]').val(),
+        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+    };
+
+    if (paymentMode === "paypal") {
+        // Redirect to PayPal
+        $.ajax({
+            type: 'POST',
+            url: "/placeorder/", 
+            data: formData,
+            success: function (response) {
+                if (response.payment_url) {
+                    // Redirect to PayPal for payment
+                    window.location.href = response.payment_url;
+                }
+            },
+            error: function (xhr, status, error) {
+                showNotification('error', `An error occurred: ${xhr.responseText || error}`);
+            }
+        });
+    } else if (paymentMode === "COD") {
+        // For COD, directly submit the order
+        $.ajax({
+            type: 'POST',
+            url: "/placeorder/", 
+            data: formData,
+            success: function (response) {
+                if (response.message) {
+                    showNotification('success', response.message);
+                    // Redirect to the order confirmation page or show the order summary
+                }
+            },
+            error: function (xhr, status, error) {
+                showNotification('error', `An error occurred: ${xhr.responseText || error}`);
+            }
+        });
+    }
+    });
+
+
+def shop(request):
+   products = Product.objects.all()
+   # Filter products by price if range is set in the request
+   min_price = request.GET.get('min_price', 0)
+   max_price = request.GET.get('max_price', 1000000)
+   products = products.filter(price__gte=min_price, price__lte=max_price)
+   return render(request,'shop.html',{'products':products})
+Kří
+Kří Ťî
+{% extends 'base.html'%}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />">
+    {% comment %} <link rel="stylesheet" href="{% static 'css/styles.css' %}"> {% endcomment %}
+    <link rel="stylesheet" href="{% static 'css/shop.css' %}">
+</head>
+<body>
+{%block content%}
+<div class="shop_block">
+    <img src="{% static 'images/aboutt.png' %}" >
+    <img style="position:relative;  width:750px;"src="{% static 'images/about.png' %}" >
+    <p style="position:relative; bottom:120px; left:650px; font-size:50px; color:white;  "> Shop </p>
+</div>
+
+
+{% comment %} <p style="color:black">hi</p> {% endcomment %}
+    <div class="containers">
+        <div class="filter-sidebar">
+            <h3>Filter by Price</h3>
+            <br>
+            <form method="GET" action="{% url 'Shop' %}">
+              <label for="price-range">Price:</label>
+              <input type="range" id="price-range" name="min_price" min="0" max="1000000" step="10000" value="{{ min_price|default:0 }}" oninput="updatePrice(this.value)">
+              <p>Selected Price: <span id="price-value">{{ min_price|default:0 }}</span></p>
+              
+              <input type="hidden" name="max_price" value="1000000">
+              <button type="submit">Apply Filter</button>
+            </form>
+        </div>
+        
+        <div class='sgrid'>
+           
+        {% for product in products%}
+
+        <div class="product_detaill">
+            {% comment %} <div><a href="{%url 'Addtowishlist' product.id %}" style="font-size:24px;position:relative; text-decoration:None; Top:58px;"><i class="fa-regular fa-heart"></i></a> {% endcomment %}
+            {% comment %} </div> {% endcomment %}
+            <a href="{% url 'product_detail' product.id %}"><img class='img' src="{{product.image.url}}" alt="{{product.title}}">
+            </a>
+
+                <h5><strong> {{product.title}}</strong></h5>
+
+                <hr >
+                <br>
+                
+                <button class='add_to_cartt'onclick="location.href='{% url 'Addtocart' product.id %}'">Add To Cart</button>
+                <a style='position:relative; left:25px;' href="{% url 'Addtowishlist' product.id %}"> <i class="fa-regular fa-heart"></i></a>
+
+                {% comment %} <a href="{% url 'product_detail' product.id %}" class="view">View</a> {% endcomment %}
+                <h6 style='displplay"inline-block; float:right'>Rs{{product.price|floatformat:2}}</h6>
+
+        </div>
+        {%endfor%}
+            
+        </div>
+    </div>
+<script>
+        function updatePrice(value) {
+          document.getElementById('price-value').innerText = value;
+        }
+</script>
+{% endblock%}
+
+</body>
+</html>

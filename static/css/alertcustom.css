@@ -1,0 +1,43 @@
+/***alert notifictaion****/
+.ajs-message {
+    top: 80px;
+
+}
+
+.alertify .ajs-dialog {
+    background-color: #5a2906;
+    border-radius: 8px;
+}
+
+/* 
+.alertify .ajs-footer .ajs-button {
+    background-color:#5a2906; /
+    color: white; 
+    padding: 10px 20px; 
+    font-size: 14px; 
+}
+
+
+.alertify .ajs-header {
+    background-color:#5a2906; 
+    color: white; 
+    font-weight: bold; 
+} */
+
+.alertify .ajs-message.ajs-success {
+    background-color: #5a2906;
+    font-size: 16px;
+    color: white;
+}
+
+.alertify .ajs-message.ajs-error {
+    background-color: #5a2906;
+    font-size: 16px;
+    color: white;
+}
+
+body .alertify .alertify-dialog {
+    background-color: #5a2906;
+}
+
+/***alert notifictaion end****/
